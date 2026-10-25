@@ -1,0 +1,301 @@
+/* =========================================
+   Variables Globales y Reset
+   ========================================= */
+:root {
+    --rojo-mini: #E53935; /* RGB(229, 57, 53) */
+    --azul-oscuro: #0F172A; /* RGB(15, 23, 42) */
+    --azul-fondo: #1E40AF; /* RGB(30, 64, 175) */
+    --gris-texto: #30509B; /* RGB(48, 80, 155) */
+    --fuente-principal: "Nunito Sans", sans-serif;
+}
+
+/* Corrección de sintaxis: '*' en lugar de '-' */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--fuente-principal);
+    background-color: var(--azul-fondo);
+    color: white;
+    line-height: 1.5; /* Mejora la legibilidad */
+}
+
+/* =========================================
+   Encabezado y Navegación
+   ========================================= */
+header {
+    background-color: var(--azul-oscuro);
+    padding: 15px 40px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.contenedor-navbar {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.contenedor-logo img {
+    width: 200px; /* Ajustado para mejor visualización */
+    height: auto;
+    display: block;
+}
+
+nav {
+    display: flex;
+    gap: 30px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600; /* Ligeramente más negrita */
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: var(--rosado-suave, #FF8A80); /* Un hover sutil */
+}
+
+/* =========================================
+   Contenido Principal General
+   ========================================= */
+main {
+    padding: 30px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* =========================================
+   Sección Carrusel
+   ========================================= */
+.carrusel {
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    margin-bottom: 40px;
+    border-radius: 15px; /* Bordes redondeados para el carrusel */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.contenedor-slide {
+    display: flex;
+    width: 400%;
+    height: 100%;
+    animation: mover 16s infinite; /* Aumenté un poco el tiempo para que sea más suave */
+}
+
+.slide {
+    width: 25%;
+    height: 100%;
+}
+
+.slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+@keyframes mover {
+    0%, 20% { transform: translateX(0); }
+    25%, 45% { transform: translateX(-25%); }
+    50%, 70% { transform: translateX(-50%); }
+    75%, 95% { transform: translateX(-75%); }
+    100% { transform: translateX(0); }
+}
+
+/* =========================================
+   Sección Inicio (Bienvenida)
+   ========================================= */
+.inicio {
+    text-align: center;
+    /* Fondo con transparencia para que se vea el fondo del body */
+    background-color: rgba(128, 128, 128, 0.7); 
+    backdrop-filter: blur(10px);
+    padding: 60px 40px;
+    margin-bottom: 40px;
+    border-radius: 15px;
+}
+
+.btn-productos {
+    display: inline-block;
+    padding: 12px 30px;
+    margin-top: 25px;
+    background-color: var(--azul-oscuro);
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-productos:hover {
+    background-color: #273a69; /* Un azul intermedio */
+    transform: translateY(-2px);
+}
+
+/* =========================================
+   Sección Productos (Cards)
+   ========================================= */
+#productos {
+    margin-bottom: 60px;
+}
+
+#productos h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 36px;
+}
+
+.contenedor-productos {
+    display: flex;
+    justify-content: center;
+    align-items: stretch; /* Hace que todas las cards tengan la misma altura */
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.card {
+    width: 280px; /* Un poco más anchas */
+    padding: 25px;
+    background-color: white;
+    border: 1px solid #e0e0e0; /* Borde más suave */
+    border-radius: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+.card img {
+    width: 100%;
+    height: 160px;
+    object-fit: contain; /* Cambiado a contain para que no se corte el logo */
+    margin-bottom: 15px;
+}
+
+.card h3 {
+    color: var(--azul-oscuro);
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+
+.card p {
+    font-size: 14px;
+    color: var(--gris-texto);
+    margin-bottom: 10px;
+    flex-grow: 1; /* Ocupa el espacio disponible */
+}
+
+.precio {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--azul-oscuro);
+    margin: 10px 0;
+}
+
+.card button {
+    padding: 12px 20px;
+    background-color: var(--azul-oscuro);
+    border: none;
+    color: white;
+    border-radius: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.card button:hover {
+    background-color: var(--rojo-mini);
+}
+
+/* =========================================
+   Sección Video
+   ========================================= */
+.seccion-video {
+    max-width: 900px;
+    margin: 0 auto 60px auto;
+    padding: 40px;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.05); /* Fondo muy sutil */
+    border-radius: 15px;
+}
+
+.seccion-video h2 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.seccion-video p {
+    margin-bottom: 30px;
+}
+
+.contenedor-video {
+    width: 100%;
+    position: relative;
+    padding-bottom: 56.25%; /* Aspect Ratio 16:9 */
+    height: 0;
+    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.contenedor-video video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* =========================================
+   Pie de página (Footer)
+   ========================================= */
+footer {
+    background-color: var(--azul-oscuro);
+    text-align: center;
+    padding: 40px;
+    margin-top: auto;
+}
+
+.footer-redes {
+    margin-top: 20px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.footer-redes a {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 18px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-decoration: none;
+}
+
+.footer-redes a:hover {
+    background-color: var(--rojo-mini);
+    transform: translateY(-3px);
+}

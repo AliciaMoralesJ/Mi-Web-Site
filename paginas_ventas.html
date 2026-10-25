@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiniGo - Tu Minimarket Familiar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Paleta de colores: Mini = Rojo (#E53935), Go = Azul (#1E88E5), Verde (#66BB6A) */
+        :root {
+            --rojo-mini: #E53935;
+            --azul-go: #1E88E5;
+            --verde-vida: #66BB6A;
+            --rosado-suave: #FF8A80;
+            --texto-oscuro: #2E7D32;
+            --gris-claro: #F5F5F5;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FAFAFA;
+            color: #333;
+        }
+
+        /* Encabezado Modificado */
+        header {
+            background-color: #FFFFFF;
+            border-bottom: 4px solid var(--rojo-mini);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 10px 0;
+        }
+
+        .contenedor-navbar {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Logo: Mini Rojo, Go Azul */
+        .contenedor-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icono {
+            width: 48px;
+            height: auto;
+        }
+
+        .logo-texto-parte1 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--rojo-mini);
+            font-family: 'Arial Black', Gadget, sans-serif;
+        }
+        .logo-texto-parte2 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--azul-go);
+            font-family: 'Arial Black', Gadget, sans-serif;
+            margin-left: -5px;
+        }
+
+        .logo-subtexto {
+            color: #555;
+            font-size: 0.9rem;
+            margin-top: -5px;
+            font-weight: bold;
+        }
+
+        /* Contenedor para el botón y el menú desplegable */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* Espacio entre el botón y el menú */
+        }
+
+        /* Estilo del botón de Categorías */
+        .btn-categorias {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: var(--rojo-mini); /* Color rojo corporativo */
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 30px; /* Borde redondeado */
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            position: relative;
+        }
+
+        .btn-categorias:hover {
+            background-color: #D32F2F; /* Rojo más oscuro al pasar el ratón */
+        }
+
+        /* Estilo para el icono de hamburguesa (3 líneas) */
+        .hamburger-icon {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 24px;
+            height: 18px;
+        }
+        
+        .hamburger-line {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: white; /* Líneas blancas dentro del botón rojo */
+            border-radius: 1.5px;
+        }
+
+        /* Estilo del menú desplegable */
+        .dropdown-menu {
+            display: none; /* Oculto por defecto */
+            position: absolute;
+            top: 100%; /* Justo debajo del botón */
+            left: 0;
+            background-color: white;
+            min-width: 250px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 12px;
+            padding: 10px 0;
+            margin-top: 10px;
+        }
+
+        /* Mostrar el menú al hacer hover o focus sobre el botón */
+        .btn-categorias:hover .dropdown-menu,
+        .btn-categorias:focus-within .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 12px 20px;
+            text-decoration: none;
+            color: #333;
+            display: block;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--gris-claro);
+            color: var(--rojo-mini);
+        }
+
+        /* Navegación principal */
+        nav a {
+            text-decoration: none;
+            color: #444;
+            font-weight: 700;
+            margin-left: 25px;
+            font-size: 1.05rem;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--rojo-mini);
+        }
+
+        /* Carrusel */
+        .carrusel {
+            background-color: #FFE0B2;
+            padding: 10px 0;
+            overflow: hidden;
+            position: relative;
+            height: 340px;
+        }
+
+        .contenedor-slide {
+            display: flex;
+            width: 400%;
+            animation: scroll 25s linear infinite;
+            position: absolute;
+            top: 10px;
+        }
+
+        .slide {
+            width: 25%;
+            flex-shrink: 0;
+        }
+
+        .slide img {
+            width: 100%;         /* Ocupa todo el ancho disponible */
+            height: 320px;       /* Fija una altura específica de 320px */
+            object-fit: cover;   /* Recorta la imagen para llenar el espacio sin deformarse */
+            border-radius: 12px;
+            display: block;
+        }
+
+        @keyframes scroll {
+            0% { left: 0; }
+            100% { left: -300%; }
+        }
+
+        /* Sección Inicio */
+        .inicio {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #FFEBEE 0%, #E3F2FD 100%);
+            border-radius: 16px;
+            max-width: 1160px;
+            margin: 20px auto;
+        }
+
+        .inicio h2 {
+            color: var(--rojo-mini);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .inicio p {
+            font-size: 1.15rem;
+            color: #555;
+            max-width: 800px;
+            margin: 0 auto 20px;
+        }
+
+        .btn-productos {
+            display: inline-block;
+            background-color: var(--rojo-mini);
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 10px rgba(229, 57, 53, 0.3);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .btn-productos:hover {
+            background-color: #D32F2F;
+            transform: translateY(-2px);
+        }
+
+        /* Sección Ofertas Especiales del Día */
+        .seccion-ofertas-dia {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .seccion-ofertas-dia h2 {
+            text-align: center;
+            color: var(--rojo-mini);
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+        }
+
+        .grid-ofertas {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .card-oferta {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            border: 2px solid var(--rosado-suave);
+            transition: transform 0.3s;
+            text-align: center;
+        }
+
+        .card-oferta:hover {
+            transform: translateY(-5px);
+        }
+
+        .oferta-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-oferta h3 {
+            color: var(--texto-oscuro);
+            margin: 15px 10px 5px;
+            font-size: 1.5rem;
+        }
+
+        .card-oferta p {
+            color: #555;
+            margin: 0 10px 15px;
+            font-size: 1rem;
+        }
+
+        .precio-oferta {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--rojo-mini);
+            margin-bottom: 15px;
+        }
+        
+        .tag-oferta {
+            background-color: var(--rosado-suave);
+            color: white;
+            padding: 5px 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        /* Catálogo de Productos Destacados - MODIFICADO A 3X3 */
+        .contenedor-productos {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            /* 3 columnas fijas, distribuye los 9 productos automáticamente en 3 filas */
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 30px; /* Aumenté un poco el gap para mejor separación */
+        }
+        
+        /* Responsive Design Ajustado */
+        @media (max-width: 992px) {
+            .contenedor-productos { grid-template-columns: repeat(2, 1fr); } /* Tablets a 2 col */
+        }
+        @media (max-width: 768px) {
+            .contenedor-productos { grid-template-columns: repeat(2, 1fr); gap: 15px;} /* Pantallas pequeñas algo más compacto */
+        }
+        @media (max-width: 480px) {
+            .contenedor-productos { grid-template-columns: 1fr; } /* Celulares a 1 col */
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            text-align: center;
+            border: 1px solid #FFE0B2;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .card h3 {
+            color: #333;
+            margin: 15px 0 8px;
+            font-size: 1.1rem;
+        }
+        
+        .card p {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: auto;
+        }
+
+        .precio {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--rojo-mini);
+            margin: 10px 0;
+        }
+
+        .card button {
+            background-color: var(--verde-vida);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+            margin-top: auto;
+        }
+
+        .card button:hover {
+            background-color: #4CAF50;
+        }
+
+        /* Bloque Experiencia MiniGo (Formulario) */
+        .seccion-bloque {
+            max-width: 1160px;
+            margin: 40px auto;
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .bloque-experiencia {
+            background-color: #E3F2FD;
+            border: 2px solid var(--azul-go);
+        }
+
+        .bloque-experiencia h2 {
+            color: var(--azul-go);
+        }
+
+        .form-experiencia {
+            max-width: 500px;
+            margin: 20px auto;
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #CCC;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        .btn-enviar {
+            background-color: var(--azul-go);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1.1rem;
+            width: 100%;
+            transition: background-color 0.2s;
+        }
+
+        .btn-enviar:hover {
+            background-color: #1565C0;
+        }
+
+        /* Sección Vídeo */
+        .seccion-video {
+            text-align: center;
+            background-color: #F5F5F5;
+            padding: 40px 20px;
+        }
+
+        .contenedor-video video {
+            max-width: 800px;
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        /* Footer y sus secciones */
+        footer {
+            background-color: #2E7D32;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 40px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto 30px;
+            text-align: left;
+        }
+
+        .footer-columna h4 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #A5D6A7;
+        }
+
+        .footer-columna ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-columna ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-columna ul li a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-columna ul li a:hover {
+            color: #E8F5E9;
+        }
+        
+        .footer-iconos-pago img {
+            height: 30px;
+            margin-right: 10px;
+            margin-bottom: 5px;
+            vertical-align: middle;
+        }
+
+        .footer-redes {
+            margin-top: 20px;
+        }
+
+        .footer-redes a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            border-radius: 50%;
+            background-color: white;
+            color: var(--verde-vida);
+            margin: 0 5px;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .footer-redes a:hover {
+            background-color: #E8F5E9;
+            transform: translateY(-3px);
+        }
+        
+        .footer-creditos {
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 20px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Encabezado Modificado -->
+    <header>
+        <div class="contenedor-navbar">
+            <!-- Logo Mini(Rojo)Go(Azul) -->
+            <a href="#" class="contenedor-logo">
+                <img src="img/Logo 1.png" alt="Icono Carrito" class="logo-icono">
+                <div class="logo-container-texto">
+                    <span class="logo-texto-parte1">Mini</span><span class="logo-texto-parte2">GO</span>
+                    <div class="logo-subtexto">Minimarket Familiar</div>
+                </div>
+            </a>
+
+            <div class="header-actions">
+                <button class="btn-categorias">
+                    <div class="hamburger-icon">
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                    </div>
+                    Categorías
+                    <div class="dropdown-menu">
+                        <a href="#" class="dropdown-item">Panadería</a>
+                        <a href="#" class="dropdown-item">Lácteos</a>
+                        <a href="#" class="dropdown-item">Verduras</a>
+                        <a href="#" class="dropdown-item">Bebidas</a>
+                        <a href="#" class="dropdown-item">Snacks</a>
+                        <a href="#" class="dropdown-item">Golosinas</a>
+                        <a href="#" class="dropdown-item">Limpieza</a>
+                        <a href="#" class="dropdown-item">SkinCare</a>
+                        <a href="#" class="dropdown-item">Mascotas</a>
+                        <a href="#" class="dropdown-item">Cuidado Personal</a>
+                    </div>
+                </button>
+                
+                <nav>
+                    <a href="#">Inicio</a>
+                    <a href="#productos">Productos</a>
+                    <a href="#ofertas">Ofertas</a>
+                    <a href="#experiencia">Experiencia</a>
+                    <a href="#contacto">Contacto</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Carrusel Promocional -->
+    <section class="carrusel">
+        <div class="contenedor-slide">
+            <div class="slide">
+                <img src="img/Reels 1.jpg" alt="Bienvenidos a MiniGo">
+            </div>
+            <div class="slide">
+                <img src="img/Reels 2.jpg" alt="Frutas y Verduras Seleccionadas">
+            </div>
+            <div class="slide">
+                <img src="img/Reels 3.jpg" alt="Promociones en Lácteos y Bebidas">
+            </div>
+            <div class="slide">
+                <img src="img/Reels 4.jpg" alt="Zona de Cariño para Mascotas">
+            </div>
+        </div>
+    </section>
+
+    <!-- Contenido Principal -->
+    <main>
+        <section class="inicio">
+            <h2>¡Bienvenido a MiniGo, tu minimarket familiar!</h2>
+            <p>
+                Todo lo que necesitas para tu hogar cerca de ti: pan calientito, verduras frescas, lácteos, snacks saludables, productos de limpieza, cuidado personal y un espacio especial para tus mascotas.
+            </p>
+            <a href="#productos" class="btn-productos">
+                Ver productos
+            </a>
+        </section>
+
+        <!-- Catálogo de Productos Destacados - AQUI ESTA EL CAMBIO A 3X3 -->
+        <section>
+            <h2 id="productos" style="text-align: center; color: var(--rojo-mini); margin: 40px 0 25px;">Nuestros Productos Destacados</h2>
+            <div class="contenedor-productos">
+                <!-- Producto 1 -->
+                <div class="card">
+                    <img src="img/1 panaderia.jpg" alt="Pan Artesanal">
+                    <h3>Pan Artesanal Recién Horneado</h3>
+                    <p>Crocante y calientito.</p>
+                    <p class="precio">S/ 3.50</p>
+                    <button>Agregar al Carrito</button>
+                </div>
+                <!-- Producto 2 -->
+                <div class="card">
+                    <img src="img/2 lacteos.jpg" alt="Pack Lácteo">
+                    <h3>Pack Lácteo Familiar</h3>
+                    <p>Leche entera 1L + Queso fresco.</p>
+                    <p class="precio">S/ 14.50</p>
+                    <button>Agregar al Carrito</button>
+                </div>
+                <!-- Producto 3 -->
+                <div class="card">
+                    <img src="img/3 verduras.jpg" alt="Cesta de Verduras">
+                    <h3>Cesta de Verduras Frescas</h3>
+                    <p>Selección especial del día.</p>
+                    <p class="precio">S/ 12.00</p>
+                    <button>Agregar al Carrito</button>
+                </div>
+                <!-- Producto 4 -->
+                <div class="card">
+                    <img src="img/4 bebidas.jpg" alt="Bebidas Variadas">
+                    <h3>Variedad de Bebidas</h3>
+                    <p>Para acompañar tus comidas.</p>
+                    <p class="precio">S/ 1.20</p>
+                    <button>Agregar al Carrito</button>
+                </div>
+                 <!-- Producto 5 -->
+                <div class="card">
+                    <img src="img/5 snacks_saludables.jpg" alt="Snacks Saludables">
+                    <h3>Snacks Saludables</h3>
+                    <p>Frutos secos y barras.</p>
+                    <p class="precio">S/ 2.50</p>
+                    <button>Agregar al Carrito</button>
+                </div>
+                 <!-- Producto 6 -->
+                <div class="card">
+                    <img src="img/6 golosinas.jpg" alt="Golosinas">
+                    <h3>Golosinas y Chocolates</h3>
+                    <p>Para compartir en familia.</p>
+                    <p class="precio">S/ 1.80</p>
+                    <button>Agregar al Carrito</button>
+                </div>
+                 <!-- Producto 7 (NUEVO) -->
+                <div class="card">
+                    <img src="img/7 limpieza.jpg" alt="Productos de Limpieza">
+                    <h3>Limpieza del Hogar</h3>
+                    <p>Cuidado y desinfección.</p>
+                    <p class="precio">S/ 5.50</p>
+                    <button>Agregar al Carrito</button>
+                </div>
+                 <!-- Producto 8 (NUEVO) -->
+                <div class="card">
+                    <img src="img/8 skincare.jpg" alt="SkinCare">
+                    <h3>SkinCare y Belleza</h3>
+                    <p>Cuidado personal diario.</p>
+                    <p class="precio">S/ 30.00</p>
+                    <button>Agregar al Carrito</button>
+                </div>
+                 <!-- Producto 9 (NUEVO) -->
+                <div class="card">
+                    <img src="img/9 mascotas.jpg" alt="Mascotas">
+                    <h3>Mascotas (Zona de Cariño)</h3>
+                    <p>Alimentos y accesorios.</p>
+                    <p class="precio">S/ 30.00</p>
+                    <button>Agregar al Carrito</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ofertas Especiales del Día -->
+        <section class="seccion-ofertas-dia">
+            <h2>🔥 Ofertas Especiales del Día</h2>
+            <p>¡Aprovecha estos súper precios solo por hoy!</p>
+            <div class="grid-ofertas">
+                <div class="card-oferta">
+                    <div class="tag-oferta">Combo Cuidado Personal</div>
+                    <img src="img/Set Mascarillas.jpg" alt="Skincare" class="oferta-img">
+                    <h3>Set Mascarillas + Serum</h3>
+                    <p>Hidrata y revitaliza tu piel.</p>
+                    <div class="precio-oferta">S/ 29.90</div>
+                    <button>Ver Producto</button>
+                </div>
+                <div class="card-oferta">
+                    <div class="tag-oferta">Combo Despensa</div>
+                    <img src="img/Set cosmetible.jpg" alt="Fideos y Arroz" class="oferta-img">
+                    <h3>Arroz (1kg) + Fideos (2paq)</h3>
+                    <p>Base para tus almuerzos.</p>
+                    <div class="precio-oferta">S/ 12.50</div>
+                    <button>Ver Producto</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bloque Experiencia MiniGo (Formulario) -->
+        <section id="experiencia" class="seccion-bloque bloque-experiencia">
+            <h2>⭐ Tu Experiencia MiniGo</h2>
+            <p>Queremos saber cómo fue tu visita. Déjanos tus comentarios y, si deseas, suscríbete para recibir promociones exclusivas.</p>
+            
+            <form class="form-experiencia">
+                <div class="form-group">
+                    <label for="nombre">Nombre Completo:</label>
+                    <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="correo">Correo Electrónico:</label>
+                    <input type="email" id="correo" name="correo" placeholder="ejemplo@correo.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="telefono">Teléfono / WhatsApp (Opcional):</label>
+                    <input type="tel" id="telefono" name="telefono" placeholder="999 999 999">
+                </div>
+                <div class="form-group">
+                    <label for="comentario">¿Cómo fue tu atención o qué producto buscas?</label>
+                    <textarea id="comentario" name="comentario" rows="4" placeholder="Cuéntanos tu experiencia..."></textarea>
+                </div>
+                <div class="form-group" style="text-align: center;">
+                    <input type="checkbox" id="recibir_promos" name="recibir_promos" checked>
+                    <label for="recibir_promos" style="display: inline; font-weight: normal;">Deseo recibir ofertas y promociones.</label>
+                </div>
+                <button type="submit" class="btn-enviar">Enviar Comentario</button>
+            </form>
+        </section>
+    </main>
+
+    <!-- Sección Vídeo Promocional -->
+    <section class="seccion-video">
+        <h2 style="color: var(--rojo-mini);">Conoce nuestro local MiniGo</h2>
+        <p>Descubre la calidad y calidez que tenemos preparada para ti.</p>
+        <div class="contenedor-video">
+            <video autoplay loop controls>
+                <source src="img/carrusel-1.mp4" type="video/mp4">
+                Tu navegador no soporta videos HTML5. 
+            </video>
+        </div>
+    </section>
+
+    <!-- Pie de Página (Servicios, Redes, Métodos de Pago) -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-columna">
+                <h4>MiniGo</h4>
+                <ul>
+                    <li><a href="#">¿Quiénes somos?</a></li>
+                    <li><a href="#">Nuestras tiendas</a></li>
+                    <li><a href="#">Trabaja con nosotros</a></li>
+                    <li><a href="#">Términos y condiciones</a></li>
+                    <li><a href="#">Política de privacidad</a></li>
+                </ul>
+            </div>
+            <div class="footer-columna">
+                <h4>Servicios</h4>
+                <ul>
+                    <li><a href="#">📖 Libro de Reclamaciones Virtual</a></li>
+                    <li><a href="#">📦 Recojo en tienda</a></li>
+                    <li><a href="#">🚚 Delivery programado</a></li>
+                    <li><a href="#">💳 Métodos de pago</a></li>
+                    <li><a href="#">Preguntas frecuentes</a></li>
+                </ul>
+            </div>
+            <div class="footer-columna">
+                <h4>Síguenos en</h4>
+                <div class="footer-redes">
+                    <a href="#" aria-label="MiniGo App"><i class="fas fa-shopping-bag"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    <a href="#" aria-label="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
+                </div>
+                <h4 style="margin-top: 20px;">Métodos de pago</h4>
+                <div class="footer-iconos-pago">
+                    <img src="https://img.icons8.com/fluency/48/visa.png" alt="Visa"/>
+                    <img src="https://img.icons8.com/fluency/48/mastercard.png" alt="Mastercard"/>
+                    <img src="https://img.icons8.com/fluency/48/amex.png" alt="American Express"/>
+                    <img src="https://img.icons8.com/fluency/48/paypal.png" alt="PayPal"/>
+                    <img src="https://img.icons8.com/color/48/yape.png" alt="Yape"/>
+                    <img src="https://img.icons8.com/color/48/plin.png" alt="Plin"/>
+                </div>
+            </div>
+        </div>
+        <div class="footer-creditos">
+            <p><strong>MiniGO</strong> &copy; 2026 - Todos los derechos reservados | Tu Minimarket Familiar</p>
+        </div>
+    </footer>
+</body>
+</html>
